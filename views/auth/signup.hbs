@@ -1,9 +1,19 @@
-<form action="/signup" method="POST">
-<label for="username">username
-    <input type="text" name="username">
-</label>
-<label for="password">password
-    <input type="password" name="password">
-</label>
-<button type="submit">Sign in</button>
-</form>
+<div id="form">
+    <h2>Login</h2>
+
+    <form action="/signup" method="POST">
+        <label for="username">username
+            <input type="text" name="username">
+        </label>
+
+        <label for="password">password
+            <input type="password" name="password">
+        </label>
+
+        <button type="submit">Sign up</button>
+
+        {{#if errorMessage}}
+        <p class="error">{{errorMessage}}</p>
+        {{/if}}
+    </form>
+</div>

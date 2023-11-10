@@ -1,1 +1,15 @@
-<h1>This is your Profile page</h1>
+{{#if userInSession}}
+  <h2>Welcome, {{ userInSession.username}}!</h2>  {{!-- name form user model --}}
+  <p>This is your profile page amigo!</p>
+  <button>
+    <a href="/profilePage">Reload the page</a>
+  </button>
+{{else}}
+  <br>
+  <p>Still no logged in user, sorry!</p>
+{{/if}}
+
+
+
+
+{{!-- userInSession. ----> use when keeping sessin active --}}
