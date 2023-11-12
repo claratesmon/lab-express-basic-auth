@@ -5,12 +5,17 @@ const User = require("../models/User.model")
 const bcrypt = require('bcryptjs');
 const saltRounds = 5;
 
-router.get('/signup', (req, res) => {
+
+// require auth middleware
+const { isLoggedIn, isLoggedOut } = require('../middleware/route-guard');
+
+
+router.get('/signup', isLoggedOut, (req, res) => {
 
     res.render('auth/signup')
 })
 
-router.get('/profilePage', (req, res) => {
+router.get('/profilePage', isLoggedIn, (req, res) => {
     res.render('profilePage', { userInSession: req.session.currentUser });
     
 })
@@ -95,6 +100,13 @@ router.post('/login', (req, res, next) => {
         .catch(error => next(error));
 });
 
+///LOGOUT
+router.post("/logout", (req, res) => {
+    req.session.destroy(err => {
+        if (err) next(err);
+        res.redirect('/');
+    });
+})
 
 
 
