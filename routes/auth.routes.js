@@ -4,20 +4,29 @@ const User = require("../models/User.model")
 
 const bcrypt = require('bcryptjs');
 const saltRounds = 5;
-
+const mongoose = require('mongoose')
 
 // require auth middleware
 const { isLoggedIn, isLoggedOut } = require('../middleware/route-guard');
 
 
 router.get('/signup', isLoggedOut, (req, res) => {
-
     res.render('auth/signup')
 })
 
 router.get('/profilePage', isLoggedIn, (req, res) => {
     res.render('profilePage', { userInSession: req.session.currentUser });
-    
+
+})
+
+router.get('/main', isLoggedIn, (req, res) => {
+    res.render('auth/main')
+
+})
+
+router.get('/private', isLoggedIn, (req, res) => {
+    res.render('auth/private');
+
 })
 
 router.post('/signup', (req, res, next) => {
@@ -39,9 +48,9 @@ router.post('/signup', (req, res, next) => {
             })
 
         })
-        .then((userCreated) => {  
+        .then((userCreated) => {
             res.redirect('./profilePage')
-            console.log(req.body)
+
         })
 
         //Since this validation is part of mongoose,
@@ -55,25 +64,19 @@ router.post('/signup', (req, res, next) => {
             }
         })                                    //next(error) //goes to the next middleware
 
-})
-
-// routes/auth.routes.js
-// ... imports and both signup routes stay untouched
+});
 
 //////////// L O G I N ///////////
 
 // GET login route stays unchanged
-router.get('/login', (req, res) => {
+router.get('/login', isLoggedOut, (req, res) => {
     res.render('auth/login')
-})
+});
 
 // POST login route ==> to process form data
 router.post('/login', (req, res, next) => {
 
-    ///console.log('SESSION =====> ', req.session)
     const { username, password } = req.body;
-    console.log(req.body)
-
     if (username === '' || password === '') {
         res.render('auth/login', {
             errorMessage: 'Please enter both, username and password to login.'
@@ -84,13 +87,14 @@ router.post('/login', (req, res, next) => {
     User.findOne({ username })   ///remember it is a MongoDB method
 
         .then(user => {
-            console.log(user);
+
             if (!user) {
                 console.log("User not registered. ");
                 res.render('auth/login', { errorMessage: 'User not found and/or incorrect password.' });
                 return;
             } else if (bcrypt.compareSync(password, user.password)) {  ////password from DB, not user model
                 req.session.currentUser = user
+                console.log(req.session.currentUser)
                 res.redirect('/profilePage');
             } else {
                 console.log("Incorrect password.");

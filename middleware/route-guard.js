@@ -12,7 +12,7 @@ const isLoggedIn = (req, res, next) => {
   // redirects the user to the home page
   const isLoggedOut = (req, res, next) => {
     if (req.session.currentUser) {
-      return res.redirect('/');
+      return res.redirect('/profilePage');
     }
     next();
   };
